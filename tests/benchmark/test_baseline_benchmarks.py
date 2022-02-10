@@ -37,10 +37,11 @@ def _empty_filepath():
 
 
 class SleepingChecker(BaseChecker):
-    """A checker that sleeps, the wall-clock time should reduce as we add workers.
+    """A checker that sleeps, the wall-clock time should reduce as we add
+    workers.
 
-    As we apply a roughly constant amount of "work" in this checker any variance is
-    likely to be caused by the pylint system.
+    As we apply a roughly constant amount of "work" in this checker any
+    variance is likely to be caused by the pylint system.
     """
 
     __implements__ = (pylint.interfaces.IRawChecker,)
@@ -58,16 +59,18 @@ class SleepingChecker(BaseChecker):
     def process_module(self, _node: nodes.Module) -> None:
         """Sleeps for `sleep_duration` on each call.
 
-        This effectively means each file costs ~`sleep_duration`+framework overhead
+        This effectively means each file costs
+        ~`sleep_duration`+framework overhead
         """
         time.sleep(self.sleep_duration)
 
 
 class SleepingCheckerLong(BaseChecker):
-    """A checker that sleeps, the wall-clock time should reduce as we add workers.
+    """A checker that sleeps, the wall-clock time should reduce as we add
+    workers.
 
-    As we apply a roughly constant amount of "work" in this checker any variance is
-    likely to be caused by the pylint system.
+    As we apply a roughly constant amount of "work" in this checker any
+    variance is likely to be caused by the pylint system.
     """
 
     __implements__ = (pylint.interfaces.IRawChecker,)
@@ -85,13 +88,16 @@ class SleepingCheckerLong(BaseChecker):
     def process_module(self, _node: nodes.Module) -> None:
         """Sleeps for `sleep_duration` on each call.
 
-        This effectively means each file costs ~`sleep_duration`+framework overhead
+        This effectively means each file costs
+        ~`sleep_duration`+framework overhead
         """
         time.sleep(self.sleep_duration)
 
 
 class NoWorkChecker(BaseChecker):
-    """A checker that sleeps, the wall-clock time should change as we add threads."""
+    """A checker that sleeps, the wall-clock time should change as we add
+    threads.
+    """
 
     __implements__ = (pylint.interfaces.IRawChecker,)
 
@@ -114,8 +120,8 @@ class NoWorkChecker(BaseChecker):
 class TestEstablishBaselineBenchmarks:
     """Naive benchmarks for the high-level pylint framework.
 
-    Because this benchmarks the fundamental and common parts and changes seen here will
-    impact everything else
+    Because this benchmarks the fundamental and common parts and changes
+    seen here will impact everything else
     """
 
     empty_filepath = _empty_filepath()
@@ -143,7 +149,8 @@ class TestEstablishBaselineBenchmarks:
         ), f"Expected no errors to be thrown: {pprint.pformat(linter.reporter.messages)}"
 
     def test_baseline_benchmark_j10(self, benchmark):
-        """Establish a baseline of pylint performance with no work across threads.
+        """Establish a baseline of pylint performance with no work across
+        threads.
 
         Same as `test_baseline_benchmark_j1` but we use -j10 with 10 fake files to
         ensure end-to-end-system invoked.
@@ -165,7 +172,9 @@ class TestEstablishBaselineBenchmarks:
         ), f"Expected no errors to be thrown: {pprint.pformat(linter.reporter.messages)}"
 
     def test_baseline_benchmark_check_parallel_j10(self, benchmark):
-        """Should demonstrate times very close to `test_baseline_benchmark_j10`."""
+        """Should demonstrate times very close to
+        `test_baseline_benchmark_j10`.
+        """
         linter = PyLinter(reporter=Reporter())
 
         # Create file per worker, using all workers
@@ -180,8 +189,9 @@ class TestEstablishBaselineBenchmarks:
     def test_baseline_lots_of_files_j1(self, benchmark):
         """Establish a baseline with only 'master' checker being run in -j1.
 
-        We do not register any checkers except the default 'master', so the cost is just
-        that of the system with a lot of files registered
+        We do not register any checkers except the default 'master', so
+        the cost is just that of the system with a lot of files
+        registered
         """
         if benchmark.disabled:
             benchmark(print, "skipping, only benchmark large file counts")
@@ -199,9 +209,10 @@ class TestEstablishBaselineBenchmarks:
     def test_baseline_lots_of_files_j10(self, benchmark):
         """Establish a baseline with only 'master' checker being run in -j10.
 
-        As with the -j1 variant above `test_baseline_lots_of_files_j1`, we do not
-        register any checkers except the default 'master', so the cost is just that of
-        the check_parallel system across 10 workers, plus the overhead of PyLinter
+        As with the -j1 variant above `test_baseline_lots_of_files_j1`,
+        we do not register any checkers except the default 'master', so
+        the cost is just that of the check_parallel system across 10
+        workers, plus the overhead of PyLinter
         """
         if benchmark.disabled:
             benchmark(print, "skipping, only benchmark large file counts")
@@ -217,10 +228,11 @@ class TestEstablishBaselineBenchmarks:
         ), f"Expected no errors to be thrown: {pprint.pformat(linter.reporter.messages)}"
 
     def test_baseline_lots_of_files_j1_empty_checker(self, benchmark):
-        """Baselines pylint for a single extra checker being run in -j1, for N-files.
+        """Baselines pylint for a single extra checker being run in -j1, for
+        N-files.
 
-        We use a checker that does no work, so the cost is just that of the system at
-        scale
+        We use a checker that does no work, so the cost is just that of
+        the system at scale
         """
         if benchmark.disabled:
             benchmark(print, "skipping, only benchmark large file counts")
@@ -237,10 +249,11 @@ class TestEstablishBaselineBenchmarks:
         ), f"Expected no errors to be thrown: {pprint.pformat(linter.reporter.messages)}"
 
     def test_baseline_lots_of_files_j10_empty_checker(self, benchmark):
-        """Baselines pylint for a single extra checker being run in -j10, for N-files.
+        """Baselines pylint for a single extra checker being run in -j10, for
+        N-files.
 
-        We use a checker that does no work, so the cost is just that of the system at
-        scale, across workers
+        We use a checker that does no work, so the cost is just that of
+        the system at scale, across workers
         """
         if benchmark.disabled:
             benchmark(print, "skipping, only benchmark large file counts")
@@ -283,7 +296,8 @@ class TestEstablishBaselineBenchmarks:
         ), f"Expected no errors to be thrown: {pprint.pformat(linter.reporter.messages)}"
 
     def test_baseline_benchmark_j10_single_working_checker(self, benchmark):
-        """Establishes baseline of multi-worker performance for PyLinter/check_parallel.
+        """Establishes baseline of multi-worker performance for
+        PyLinter/check_parallel.
 
         We expect this benchmark to take less time that test_baseline_benchmark_j1,
         `error_margin*(1/J)*(numfiles*SleepingChecker.sleep_duration)`
